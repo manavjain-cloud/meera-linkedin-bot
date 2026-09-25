@@ -1,0 +1,12 @@
+{
+  "name": "meera-linkedin-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Telegram bot that scores notes, adds a Google News angle and drafts LinkedIn posts for human approval",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "check": "node --check lib/services.js && node --check lib/pipeline.js && node --check api/webhook.js && node --check api/health.js",
+    "test": "node scripts/test-local.mjs"
+  }
+}
