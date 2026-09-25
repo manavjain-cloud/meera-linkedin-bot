@@ -17,7 +17,21 @@ export default async function handler(req, res) {
     const { text, model } = await gemini('Reply with the single word OK.', { temperature: 0 });
     checks.gemini = { ok: /ok/i.test(text), model };
   } catch (e) {
-    checks.gemini = { ok: false, error: e.message.slice(0, 200) };
+    checks.gemini = { ok: false, error: e.message.slice(0, 600) };
+  }
+
+  if (req.query?.models) {
+    try {
+      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', {
+        headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY },
+      });
+      const d = await r.json();
+      checks.geminiModels = (d.models || [])
+        .filter((m) => (m.supportedGenerationMethods || []).includes('generateContent'))
+        .map((m) => m.name.replace('models/', ''));
+    } catch (e) {
+      checks.geminiModels = String(e.message).slice(0, 200);
+    }
   }
 
   try {
